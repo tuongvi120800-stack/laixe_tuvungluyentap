@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>填空練習 · Bài tập điền từ · Thi lái xe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Ma+Shan+Zheng&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root{
+    --paper:#f4ead9;
+    --paper-dark:#e8dcc4;
+    --ink:#2b2b2b;
+    --ink-soft:#4a4438;
+    --seal:#a8362b;
+    --seal-dark:#7d2019;
+    --gold:#b08d4f;
+    --line:#c9b998;
+    --green:#4c7a4c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at top left, rgba(160,140,100,0.12), transparent 60%),
+      radial-gradient(ellipse at bottom right, rgba(120,90,60,0.12), transparent 60%),
+      var(--paper);
+    background-attachment:fixed;
+    font-family:'Noto Serif','Noto Serif SC', serif;
+    color:var(--ink);
+    padding:26px 14px 70px;
+  }
+  .wrap{ max-width:760px; margin:0 auto; }
+
+  header{ text-align:center; margin-bottom:20px; }
+  .title-cn{
+    font-family:'Ma Shan Zheng', cursive;
+    font-size:2.4rem;
+    margin:0;
+  }
+  .title-sub{
+    font-size:0.9rem;
+    letter-spacing:2px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .seal-badge{
+    display:inline-block;
+    background:var(--seal);
+    color:#f4ead9;
+    font-family:'Ma Shan Zheng', cursive;
+    font-size:1rem;
+    padding:4px 10px;
+    border-radius:4px;
+    transform:rotate(-3deg);
+    box-shadow:0 2px 4px rgba(0,0,0,0.25);
+    margin-top:8px;
+  }
+
+  .global-controls{
+    display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
+    margin-bottom:24px;
+  }
+  button, select{
+    font-family:'Noto Serif', serif;
+    font-size:0.85rem;
+    padding:8px 16px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:var(--paper-dark);
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  button:hover{ background:var(--gold); color:#fff; border-color:var(--gold); }
+  button.primary{ background:var(--seal); color:#fff; border-color:var(--seal-dark); }
+  button.primary:hover{ background:var(--seal-dark); }
+
+  .group{
+    background:linear-gradient(160deg, rgba(255,255,255,0.4), transparent 40%), var(--paper);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(60,45,20,0.10);
+    margin-bottom:22px;
+    overflow:hidden;
+  }
+  .group-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px;
+    background:linear-gradient(90deg, var(--seal), var(--seal-dark));
+    color:#f4ead9;
+    cursor:pointer;
+  }
+  .group-header h2{
+    font-size:1.05rem; margin:0; letter-spacing:1px;
+  }
+  .group-header .caret{ transition:transform .25s ease; font-size:0.9rem; }
+  .group.collapsed .caret{ transform:rotate(-90deg); }
+  .group-body{
+    padding:16px 20px 20px;
+  }
+  .group.collapsed .group-body{ display:none; }
+
+  .qitem{
+    border-bottom:1px dashed var(--line);
+    padding:16px 2px;
+  }
+  .qitem:last-child{ border-bottom:none; }
+  .qnum{
+    font-size:0.75rem;
+    color:var(--gold);
+    letter-spacing:2px;
+    margin-bottom:4px;
+  }
+  .sentence-cn{
+    font-family:'Noto Serif SC', serif;
+    font-size:1.25rem;
+    line-height:1.8;
+    margin:0 0 4px;
+  }
+  .blank{
+    display:inline-block;
+    min-width:56px;
+    border-bottom:2px solid var(--seal);
+    text-align:center;
+    color:var(--seal);
+    font-weight:600;
+  }
+  .blank.revealed{ border-bottom-style:solid; }
+  .sentence-py{
+    font-size:0.92rem;
+    font-style:italic;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+    line-height:1.5;
+  }
+  .answer-box{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .toggle-btn{
+    font-size:0.78rem;
+    padding:5px 14px;
+    border-radius:14px;
+  }
+  .answer-reveal{
+    font-size:0.95rem;
+    color:var(--green);
+    font-weight:600;
+    opacity:0;
+    max-height:0;
+    overflow:hidden;
+    transition:opacity .2s ease;
+  }
+  .answer-reveal.show{ opacity:1; max-height:60px; }
+  .answer-reveal .py{
+    font-weight:400;
+    font-style:italic;
+    color:var(--ink-soft);
+  }
+
+  .group-progress{
+    font-size:0.78rem;
+    color:#f4ead9;
+    opacity:0.85;
+  }
+
+  footer{
+    text-align:center;
+    margin-top:20px;
+    font-size:0.75rem;
+    color:var(--ink-soft);
+    opacity:0.6;
+    letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="title-cn">填空練習</p>
+    <p class="title-sub">BÀI TẬP ĐIỀN TỪ · TỪ VỰNG THI BẰNG LÁI XE</p>
+    <div class="seal-badge">學車 通關</div>
+  </header>
+
+  <div class="global-controls">
+    <button id="revealAllBtn">👁 Hiện tất cả đáp án</button>
+    <button id="hideAllBtn">🙈 Ẩn tất cả đáp án</button>
+    <button id="expandAllBtn" class="primary">展開 Mở tất cả nhóm</button>
+  </div>
+
+  <div id="groups"></div>
+
+  <footer>共 30 題 · 6 個詞彙組，每組 5 題 · Vĩnh Vi 學車詞彙</footer>
+</div>
+
+<script>
+const DATA = [
+{
+  title: "Nhóm 1 — Giấy tờ & thủ tục",
+  items: [
+    {before:"去驾校", after:"，需要带身份证。", pyBefore:"Qù jiàxiào", pyAfter:", xūyào dài shēnfènzhèng.", word:"报名", py:"bàomíng"},
+    {before:"科目二没通过，要申请", after:"。", pyBefore:"Kēmù èr méi tōngguò, yào shēnqǐng", pyAfter:".", word:"补考", py:"bǔkǎo"},
+    {before:"医生说我的", after:"结果没问题，可以继续考试。", pyBefore:"Yīshēng shuō wǒ de", pyAfter:"jiéguǒ méi wèntí, kěyǐ jìxù kǎoshì.", word:"体检", py:"tǐjiǎn"},
+    {before:"系统显示", after:"不够，我得再去练几次车。", pyBefore:"Xìtǒng xiǎnshì", pyAfter:"búgòu, wǒ děi zài qù liàn jǐ cì chē.", word:"学时", py:"xuéshí"},
+    {before:"考完试以后，手机上马上显示了", after:"。", pyBefore:"Kǎo wán shì yǐhòu, shǒujī shàng mǎshàng xiǎnshìle", pyAfter:".", word:"成绩单", py:"chéngjìdān"},
+  ]
+},
+{
+  title: "Nhóm 2 — Bộ phận xe",
+  items: [
+    {before:"手", after:"坏了，得赶紧去修。", pyBefore:"Shǒu", pyAfter:"huàile, děi gǎnjǐn qù xiū.", word:"方向盘", py:"fāngxiàngpán"},
+    {before:"新手开车，很容易忘了看", after:"。", pyBefore:"Xīnshǒu kāichē, hěn róngyì wàngle kàn", pyAfter:".", word:"后视镜", py:"hòushìjìng"},
+    {before:"上坡的时候要注意", after:"，不然车会往后溜。", pyBefore:"Shàngpō de shíhòu yào zhùyì", pyAfter:", bùrán chē huì wǎng hòu liū.", word:"手刹", py:"shǒushā"},
+    {before:"换挡的时候忘了踩", after:"，车子熄火了。", pyBefore:"Huàndǎng de shíhòu wàngle cǎi", pyAfter:", chēzi xíhuǒle.", word:"离合器", py:"líhéqì"},
+    {before:"", after:"上的油灯亮了，要赶快去加油。", pyBefore:"", pyAfter:"shàng de yóudēng liàngle, yào gǎnkuài qù jiāyóu.", word:"仪表盘", py:"yíbiǎopán"},
+  ]
+},
+{
+  title: "Nhóm 3 — Động tác lái",
+  items: [
+    {before:"", after:"之前一定要先看左右，确认安全再走。", pyBefore:"", pyAfter:"zhīqián yídìng yào xiān kàn zuǒyòu, quèrèn ānquán zài zǒu.", word:"起步", py:"qǐbù"},
+    {before:"看到警察示意，要马上", after:"。", pyBefore:"Kàndào jǐngchá shìyì, yào mǎshàng", pyAfter:".", word:"靠边停车", py:"kàobiān tíngchē"},
+    {before:"进入学校路段，要", after:"，慢慢开过去。", pyBefore:"Jìnrù xuéxiào lùduàn, yào", pyAfter:", mànmàn kāi guòqù.", word:"减速", py:"jiǎnsù"},
+    {before:"走错方向了，只能找个路口赶紧", after:"。", pyBefore:"Zǒu cuò fāngxiàng le, zhǐnéng zhǎo gè lùkǒu gǎnjǐn", pyAfter:".", word:"掉头", py:"diàotóu"},
+    {before:"汇入主路后我", after:"跟上了前面的车流。", pyBefore:"Huìrù zhǔ lù hòu wǒ", pyAfter:"gēn shàngle qiánmiàn de chēliú.", word:"加速", py:"jiāsù"},
+  ]
+},
+{
+  title: "Nhóm 4 — Luật giao thông",
+  items: [
+    {before:"如果", after:"，就会被扣分还罚款。", pyBefore:"Rúguǒ", pyAfter:", jiù huì bèi kòufēn hái fákuǎn.", word:"闯红灯", py:"chuǎng hóngdēng"},
+    {before:"这条路", after:"是每小时60公里。", pyBefore:"Zhè tiáo lù", pyAfter:"shì měi xiǎoshí liùshí gōnglǐ.", word:"限速", py:"xiànsù"},
+    {before:"没有买", after:"，就不能合法上路。", pyBefore:"Méiyǒu mǎi", pyAfter:", jiù bùnéng héfǎ shàng lù.", word:"保险", py:"bǎoxiǎn"},
+    {before:"昨晚喝了酒，他选择打车回家，不", after:"。", pyBefore:"Zuówǎn hēle jiǔ, tā xuǎnzé dǎchē huí jiā, bù", pyAfter:".", word:"醉驾", py:"zuìjià"},
+    {before:"车子买了三年了，今年要第一次去做", after:"。", pyBefore:"Chēzi mǎile sān niánle, jīnnián yào dì yī cì qù zuò", pyAfter:".", word:"年审", py:"niánshěn"},
+  ]
+},
+{
+  title: "Nhóm 5 — Biển báo giao thông",
+  items: [
+    {before:"看到", after:"的牌子，就不能往这个方向走。", pyBefore:"Kàndào", pyAfter:"de páizi, jiù bùnéng wǎng zhège fāngxiàng zǒu.", word:"禁止通行", py:"jìnzhǐ tōngxíng"},
+    {before:"快到", after:"了，要减速慢行，让行人先过。", pyBefore:"Kuài dào", pyAfter:"le, yào jiǎnsù mànxíng, ràng xíngrén xiān guò.", word:"人行横道", py:"rénxíng héngdào"},
+    {before:"这条路是", after:"，不能逆向行驶。", pyBefore:"Zhè tiáo lù shì", pyAfter:", bùnéng nìxiàng xíngshǐ.", word:"单行道", py:"dānxíngdào"},
+    {before:"立交桥下写着", after:"两米八，大车千万别硬闯。", pyBefore:"Lìjiāoqiáo xià xiězhe", pyAfter:"liǎng mǐ bā, dàchē qiānwàn bié yìng chuǎng.", word:"限高", py:"xiàngāo"},
+    {before:"前面是", after:"，车速一下子就慢了下来。", pyBefore:"Qiánmiàn shì", pyAfter:", chēsù yíxiàzi jiù mànle xiàlái.", word:"施工路段", py:"shīgōng lùduàn"},
+  ]
+},
+{
+  title: "Nhóm 6 — Trường hợp khẩn cấp",
+  items: [
+    {before:"发生", after:"以后，要马上报警。", pyBefore:"Fāshēng", pyAfter:"yǐhòu, yào mǎshàng bàojǐng.", word:"事故", py:"shìgù"},
+    {before:"车子半路", after:"了，只能打电话叫拖车来救援。", pyBefore:"Chēzi bànlù", pyAfter:"le, zhǐnéng dǎ diànhuà jiào tuōchē lái jiùyuán.", word:"抛锚", py:"pāomáo"},
+    {before:"高速上如果", after:"，先摆好警示三角牌，再打电话求助。", pyBefore:"Gāosù shàng rúguǒ", pyAfter:", xiān bǎi hǎo jǐngshì sānjiǎopái, zài dǎ diànhuà qiúzhù.", word:"爆胎", py:"bàotāi"},
+    {before:"听到", after:"的声音，所有车都赶紧靠边让路。", pyBefore:"Tīngdào", pyAfter:"de shēngyīn, suǒyǒu chē dōu gǎnjǐn kàobiān rànglù.", word:"救护车", py:"jiùhùchē"},
+    {before:"出了事故以后，他第一时间联系保险公司", after:"。", pyBefore:"Chūle shìgù yǐhòu, tā dì yī shíjiān liánxì bǎoxiǎn gōngsī", pyAfter:".", word:"理赔", py:"lǐpéi"},
+  ]
+}
+];
+
+const container = document.getElementById('groups');
+
+DATA.forEach((g, gi)=>{
+  const groupEl = document.createElement('div');
+  groupEl.className = 'group collapsed';
+  groupEl.dataset.gi = gi;
+
+  const headerEl = document.createElement('div');
+  headerEl.className = 'group-header';
+  headerEl.innerHTML = `<h2>${g.title}</h2><span class="group-progress">5 câu</span><span class="caret">▾</span>`;
+  headerEl.addEventListener('click', ()=> groupEl.classList.toggle('collapsed'));
+
+  const bodyEl = document.createElement('div');
+  bodyEl.className = 'group-body';
+
+  g.items.forEach((it, qi)=>{
+    const q = document.createElement('div');
+    q.className = 'qitem';
+
+    const blankLen = it.word.length;
+    const underline = '＿'.repeat(Math.max(2, Math.min(blankLen,4)));
+
+    q.innerHTML = `
+      <div class="qnum">第 ${qi+1} 題</div>
+      <p class="sentence-cn">${it.before}<span class="blank">${underline}</span>${it.after}</p>
+      <p class="sentence-py">${it.pyBefore ? it.pyBefore + ' ' : ''}___${it.pyAfter ? ' ' + it.pyAfter : ''}</p>
+      <div class="answer-box">
+        <button class="toggle-btn">顯示答案 Xem đáp án</button>
+        <div class="answer-reveal">答案：${it.word} <span class="py">(${it.py})</span></div>
+      </div>
+    `;
+
+    const btn = q.querySelector('.toggle-btn');
+    const rev = q.querySelector('.answer-reveal');
+    btn.addEventListener('click', ()=>{
+      const isShown = rev.classList.toggle('show');
+      btn.textContent = isShown ? '隱藏答案 Ẩn đáp án' : '顯示答案 Xem đáp án';
+    });
+
+    bodyEl.appendChild(q);
+  });
+
+  groupEl.appendChild(headerEl);
+  groupEl.appendChild(bodyEl);
+  container.appendChild(groupEl);
+});
+
+document.getElementById('revealAllBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('.answer-reveal').forEach(el=>el.classList.add('show'));
+  document.querySelectorAll('.toggle-btn').forEach(el=>el.textContent = '隱藏答案 Ẩn đáp án');
+});
+document.getElementById('hideAllBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('.answer-reveal').forEach(el=>el.classList.remove('show'));
+  document.querySelectorAll('.toggle-btn').forEach(el=>el.textContent = '顯示答案 Xem đáp án');
+});
+let expanded = false;
+document.getElementById('expandAllBtn').addEventListener('click', (e)=>{
+  expanded = !expanded;
+  document.querySelectorAll('.group').forEach(el=>{
+    el.classList.toggle('collapsed', !expanded);
+  });
+  e.target.textContent = expanded ? '收起 Thu gọn tất cả nhóm' : '展開 Mở tất cả nhóm';
+});
+</script>
+</body>
+</html>
